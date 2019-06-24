@@ -18,6 +18,7 @@
       {
         'message' : 'You have unsaved changes!',
         'dirtyClass' : 'dirty',
+        'fieldDirtyClass' : 'dirty-field',
         'change' : null,
         'silent' : false,
         'addRemoveFieldsMarksDirty' : false,
@@ -73,9 +74,16 @@
       var isFieldDirty = function($field) {
         var origValue = $field.attr('data-ays-orig');
         if (undefined === origValue) {
+          $field.removeClass(settings.fieldDirtyClass);
           return false;
         }
-        return (getValue($field) != origValue);
+        if (getValue($field) != origValue) {
+          $field.addClass(settings.fieldDirtyClass);
+          return true;
+        } else {
+          $field.removeClass(settings.fieldDirtyClass);
+          return false;
+        }
       };
 
       var $form = ($(this).is('form')) 

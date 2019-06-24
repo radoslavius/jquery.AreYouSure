@@ -65,13 +65,13 @@
     };
 
     var storeOrigValue = function($field) {
-      $field.data('ays-orig', getValue($field));
+      $field.attr('data-ays-orig', getValue($field));
     };
 
     var checkForm = function(evt) {
 
       var isFieldDirty = function($field) {
-        var origValue = $field.data('ays-orig');
+        var origValue = $field.attr('data-ays-orig');
         if (undefined === origValue) {
           return false;
         }
@@ -92,7 +92,7 @@
 
       if (settings.addRemoveFieldsMarksDirty) {              
         // Check if field count has changed
-        var origCount = $form.data("ays-orig-field-count");
+        var origCount = $form.attr("data-ays-orig-field-count");
         if (origCount != $fields.length) {
           setDirtyStatus($form, true);
           return;
@@ -117,7 +117,7 @@
       $(fields).each(function() { storeOrigValue($(this)); });
       $(fields).unbind(settings.fieldEvents, checkForm);
       $(fields).bind(settings.fieldEvents, checkForm);
-      $form.data("ays-orig-field-count", $(fields).length);
+      $form.attr("data-ays-orig-field-count", $(fields).length);
       setDirtyStatus($form, false);
     };
 
@@ -140,7 +140,7 @@
       var fields = $form.find(settings.fieldSelector);
       $(fields).each(function() {
         var $field = $(this);
-        if (!$field.data('ays-orig')) {
+        if (!$field.attr('data-ays-orig')) {
           storeOrigValue($field);
           $field.bind(settings.fieldEvents, checkForm);
         }
@@ -151,7 +151,7 @@
 
     var reinitialize = function() {
       initForm($(this));
-    }
+    };
 
     if (!settings.silent && !window.aysUnloadSet) {
       window.aysUnloadSet = true;

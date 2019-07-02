@@ -11,9 +11,9 @@
  * Date:    13th August 2014
  */
 (function($) {
-  
+
   $.fn.areYouSure = function(options) {
-      
+
     var settings = $.extend(
       {
         'message' : 'You have unsaved changes!',
@@ -28,9 +28,9 @@
 
     var getValue = function($field) {
       if ($field.hasClass('ays-ignore')
-          || $field.hasClass('aysIgnore')
-          || $field.attr('data-ays-ignore')
-          || $field.attr('name') === undefined) {
+        || $field.hasClass('aysIgnore')
+        || $field.attr('data-ays-ignore')
+        || $field.attr('name') === undefined) {
         return null;
       }
 
@@ -86,9 +86,9 @@
         }
       };
 
-      var $form = ($(this).is('form')) 
-                    ? $(this)
-                    : $(this).parents('form');
+      var $form = ($(this).is('form'))
+        ? $(this)
+        : $(this).parents('form');
 
       // Test on the target first as it's the most likely to be dirty
       if (isFieldDirty($(evt.target))) {
@@ -98,10 +98,9 @@
 
       $fields = $form.find(settings.fieldSelector);
 
-      if (settings.addRemoveFieldsMarksDirty) {              
+      if (settings.addRemoveFieldsMarksDirty) {
         // Check if field count has changed
-        var origCount = $form.attr("data-ays-orig-field-count");
-        if (origCount != $fields.length) {
+        if (parseInt($form.attr("data-ays-all-field-count")) !== $fields.length || parseInt($form.attr("data-ays-orig-field-count")) !== fieldsCount($form)) {
           setDirtyStatus($form, true);
           return;
         }
@@ -116,7 +115,7 @@
           return false; // break
         }
       });
-      
+
       setDirtyStatus($form, isDirty);
     };
 
@@ -125,14 +124,27 @@
       $(fields).each(function() { storeOrigValue($(this)); });
       $(fields).unbind(settings.fieldEvents, checkForm);
       $(fields).bind(settings.fieldEvents, checkForm);
-      $form.attr("data-ays-orig-field-count", $(fields).length);
+      $form.attr("data-ays-all-field-count", $(fields).length);
+      $form.attr("data-ays-orig-field-count", fieldsCount($form));
       setDirtyStatus($form, false);
+    };
+
+    var fieldsCount = function($form) {
+      var fields = $form.find(settings.fieldSelector);
+      var count = 0;
+      $(fields).each(function() {
+        var attr = $(this).attr('data-ays-orig');
+        if (typeof attr !== typeof undefined && attr !== false) {
+          count++;
+        }
+      });
+      return count;
     };
 
     var setDirtyStatus = function($form, isDirty) {
       var changed = isDirty != $form.hasClass(settings.dirtyClass);
       $form.toggleClass(settings.dirtyClass, isDirty);
-        
+
       // Fire change event if required
       if (changed) {
         if (settings.change) settings.change.call($form, $form);
@@ -185,7 +197,7 @@
         return;
       }
       var $form = $(this);
-        
+
       $form.submit(function() {
         $form.removeClass(settings.dirtyClass);
       });

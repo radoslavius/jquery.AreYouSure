@@ -77,6 +77,14 @@
           $field.removeClass(settings.fieldDirtyClass);
           return false;
         }
+        if ($field.is(':checkbox')) {
+          if (origValue === 'false') {
+            origValue = false;
+          }
+          if (origValue === 'true') {
+            origValue = true;
+          }
+        }
         if (getValue($field) != origValue) {
           $field.addClass(settings.fieldDirtyClass);
           return true;
